@@ -1,15 +1,15 @@
-import {pgTable, pgEnum, uuid,text,timestamp,integer,index} from "drizzle-orm/pg-core";
-import { email } from "zod";
+import { pgTable, pgEnum, uuid, text, timestamp, integer, index } from "drizzle-orm/pg-core";
 
-export const role = pgEnum ("Role", ["USER", "ADMIN"]);
-export const tokenType = pgEnum("TokenType", ["REFRESH","EMAIL_VERIFY"]);
+export const role = pgEnum("Role", ["USER", "ADMIN"]);
+export const tokenType = pgEnum("TokenType", ["REFRESH", "EMAIL_VERIFY"]);
 
-export const users = pgTable("user",{
-    id: uuid().defaultRandom().primaryKey(),
-    email:text().unique(), password: text(), name:text(),
-    emailVerfied: timestamp("created_at",{withTimezone:true,mode: "string"}). defaultNow().notNull(),
-    updatedAt: timestamp("created_at",{withTimezone:true,mode: "string"}). defaultNow().notNull().$onUpdate(()=> new Date().toISOString()),
-    role: role().default("USER").notNull(),
+export const users = pgTable("user", {
+  id: uuid().defaultRandom().primaryKey(),
+  email: text().unique(), password: text(), name: text(),
+  emailVerified: timestamp("email_verified", { withTimezone: true, mode: "string" }),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).defaultNow().notNull().$onUpdate(() => new Date().toISOString()),
+  role: role().default("USER").notNull(),
 });
 
 export const recipes = pgTable("recipe", {
