@@ -11,21 +11,29 @@ export const csrfCookieOptions = {
   path: "/",
 };
 
-export const csrfSessionCookieName = isProduction ? "__Host-csrf-session" : "csrf-session";
-export const csrfTokenCookieName = isProduction ? "__Host-csrf-token" : "csrf-token";
+export const csrfSessionCookieName = isProduction
+  ? "__Host-csrf-session"
+  : "csrf-session";
 
-// Use a stable configured secret in production. The random development secret resets on restart.
+export const csrfTokenCookieName = isProduction
+  ? "__Host-csrf-token"
+  : "csrf-token";
+
 const csrfSecret = ENV.CSRF_SECRET || randomBytes(32).toString("hex");
+
 if (isProduction && !ENV.CSRF_SECRET) {
   throw new Error("CSRF_SECRET is required in production");
 }
 
 export const { generateCsrfToken, validateRequest } = doubleCsrf({
   getSecret: () => csrfSecret,
-  // Refresh-token rotation invalidates the old CSRF token. Before login, use an anonymous ID.
-  getSessionIdentifier: (req) => req.cookies?.refreshToken || req.cookies?.accessToken
-    || req.cookies?.[csrfSessionCookieName] || "",
+
+  // Use the same session identifier before and after authentication.
+  getSessionIdentifier: (req) =>
+    req.cookies?.[csrfSessionCookieName] || "",
+
   cookieName: csrfTokenCookieName,
   cookieOptions: csrfCookieOptions,
-  getCsrfTokenFromRequest: (req) => req.get("x-csrf-token"),
+  getCsrfTokenFromRequest: (req) =>
+    req.get("x-csrf-token"),
 });
