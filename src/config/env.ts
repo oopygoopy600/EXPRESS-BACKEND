@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const ENV = {
-  APP_NAME: process.env.APP_NAME || 'Portfolio API',
+  APP_NAME: process.env.APP_NAME || 'RECIPE BOOK 3C',
   PORT: parseInt(process.env.PORT || '7000', 10),
   NODE_ENV: process.env.NODE_ENV || 'development',
   JWT_SECRET: process.env.JWT_SECRET || 'fallback_secret_change_me',
